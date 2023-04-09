@@ -95,6 +95,8 @@ private func fromSourceKit(_ sourcekitObject: sourcekitd_variant_t) -> SourceKit
     }
 }
 
+public let SourceKitDNotification: Notification.Name = .init("SourceKitDNotification")
+
 /// Lazily and singly computed Void constants to initialize SourceKit once per session.
 private let initializeSourceKit: Void = {
     sourcekitd_initialize()
@@ -102,6 +104,7 @@ private let initializeSourceKit: Void = {
 private let initializeSourceKitFailable: Void = {
     initializeSourceKit
     sourcekitd_set_notification_handler { response in
+        NotificationCenter.default.post(name: SourceKitDNotification, object: fromSourceKit(sourcekitd_response_get_value(response!)))
         if !sourcekitd_response_is_error(response!) {
             fflush(stdout)
             fputs("sourcekitten: connection to SourceKitService restored!\n", stderr)
