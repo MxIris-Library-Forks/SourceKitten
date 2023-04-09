@@ -165,7 +165,7 @@ public enum Request {
     /// Get the version triple of the compiler that SourceKit is using
     case compilerVersion
 
-    fileprivate var sourcekitObject: SourceKitObject {
+    public var sourcekitObject: SourceKitObject {
         switch self {
         case let .editorOpen(file):
             if let path = file.path {
