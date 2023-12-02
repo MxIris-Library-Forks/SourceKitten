@@ -6,11 +6,18 @@
 
 ##### Enhancements
 
-* None.
+* Added new syntax, attribute and declaration kinds introduced in Swift 5.8.  
+  [JP Simard](https://github.com/jpsim)
 
 ##### Bug Fixes
 
-* None.
+* Fix a crash when a file cannot be read as UTF-8.  
+  [Martin Redington](https://github.com/mildm8nnered)
+  [#765](https://github.com/jpsim/SourceKitten/issues/765)
+
+* Fix compiling via `make` with Xcode 15.  
+  [JP Simard](https://github.com/jpsim)
+  [#793](https://github.com/jpsim/SourceKitten/issues/793)
 
 ## 0.34.1
 

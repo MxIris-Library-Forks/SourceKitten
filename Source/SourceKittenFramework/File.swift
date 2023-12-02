@@ -5,11 +5,11 @@ import SourceKit
 #endif
 import SWXMLHash
 
-// swiftlint:disable file_length type_body_length
+// swiftlint:disable file_length
 // This file could easily be split up
 
 /// Represents a source file.
-public final class File {
+public final class File { // swiftlint:disable:this type_body_length
     /// File path. Nil if initialized directly with `File(contents:)`.
     public let path: String?
     /// File contents.
@@ -17,7 +17,12 @@ public final class File {
         get {
             _contentsQueue.sync {
                 if _contents == nil {
-                    _contents = try! String(contentsOfFile: path!, encoding: .utf8)
+                    do {
+                        _contents = try String(contentsOfFile: path!, encoding: .utf8)
+                    } catch {
+                        fputs("Could not read contents of `\(path!)`\n", stderr)
+                        _contents = ""
+                    }
                 }
             }
             return _contents!

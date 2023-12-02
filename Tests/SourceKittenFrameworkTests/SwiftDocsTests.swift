@@ -7,14 +7,24 @@ func compareJSONString(withFixtureNamed name: String,
                        rootDirectory: String = fixturesDirectory,
                        file: StaticString = #file,
                        line: UInt = #line) {
+    let jsonString = String(describing: jsonString)
+
     // Strip out fixtures directory since it's dependent on the test machine's setup
+#if os(Windows)
+    let escapedFixturesDirectory = URL(fileURLWithPath: rootDirectory)
+        .standardizedFileURL
+        .withUnsafeFileSystemRepresentation { String(cString: $0!) }
+        .replacingOccurrences(of: #"\"#, with: #"\\"#)
+        .replacingOccurrences(of: "/", with: #"\/"#)
+#else
     let escapedFixturesDirectory = rootDirectory.replacingOccurrences(of: "/", with: "\\/")
-    let jsonString = String(describing: jsonString).replacingOccurrences(of: escapedFixturesDirectory, with: "")
+#endif
+    let escapedJSONString = jsonString.replacingOccurrences(of: escapedFixturesDirectory, with: "")
 
     // Strip out any other absolute paths after that, since it's also dependent on the test machine's setup
     let absolutePathRegex = try! NSRegularExpression(pattern: "\"key\\.filepath\" : \"\\\\/[^\\\n]+", options: [])
-    let actualContent = absolutePathRegex.stringByReplacingMatches(in: jsonString, options: [],
-                                                                   range: NSRange(location: 0, length: jsonString.bridge().length),
+    let actualContent = absolutePathRegex.stringByReplacingMatches(in: escapedJSONString, options: [],
+                                                                   range: NSRange(location: 0, length: escapedJSONString.bridge().length),
                                                                    withTemplate: "\"key\\.filepath\" : \"\",")
     let expectedFile = File(path: versionedExpectedFilename(for: name))!
 
@@ -59,7 +69,12 @@ private func compareDocs(withFixtureNamed name: String, file: StaticString = #fi
 }
 
 private func versionedExpectedFilename(for name: String) -> String {
-#if compiler(>=5.6)
+#if compiler(>=5.9)
+    let versions = ["swift-5.9", "swift-5.8", "swift-5.6", "swift-5.5.2", "swift-5.5", "swift-5.4", "swift-5.3.1", "swift-5.3", "swift-5.2", "swift-5.1",
+                    "swift-5.0"]
+#elseif compiler(>=5.8)
+    let versions = ["swift-5.8", "swift-5.6", "swift-5.5.2", "swift-5.5", "swift-5.4", "swift-5.3.1", "swift-5.3", "swift-5.2", "swift-5.1", "swift-5.0"]
+#elseif compiler(>=5.6)
     let versions = ["swift-5.6", "swift-5.5.2", "swift-5.5", "swift-5.4", "swift-5.3.1", "swift-5.3", "swift-5.2", "swift-5.1", "swift-5.0"]
 #elseif compiler(>=5.5.2)
     let versions = ["swift-5.5.2", "swift-5.5", "swift-5.4", "swift-5.3.1", "swift-5.3", "swift-5.2", "swift-5.1", "swift-5.0"]
@@ -76,6 +91,8 @@ private func versionedExpectedFilename(for name: String) -> String {
 #endif
 #if os(Linux)
     let platforms = ["Linux", ""]
+#elseif os(Windows)
+    let platforms = ["Windows", ""]
 #else
     let platforms = [""]
 #endif
@@ -106,7 +123,11 @@ private func diff(original: String, modified: String) -> String {
 }
 
 private let buildingSwiftVersion: String = {
-#if compiler(>=5.6)
+#if compiler(>=5.9)
+    return "swift-5.9"
+#elseif compiler(>=5.8)
+    return "swift-5.8"
+#elseif compiler(>=5.6)
     return "swift-5.6"
 #elseif compiler(>=5.5.0)
     return "swift-5.5"
@@ -153,7 +174,7 @@ class SwiftDocsTests: XCTestCase {
             "key.doc.parameters": [[
                 "name": "param1",
                 "discussion": [["Para": "param1_discussion"]]
-            ]],
+            ] as [String: Any]],
             "key.doc.result_discussion": [["Para": "result_discussion"]]
         ]
         XCTAssertEqual(toNSDictionary(parsedPreSwift32), expected)
