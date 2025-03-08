@@ -1,10 +1,57 @@
-## Main
+## 0.37.0
+
+#### Breaking
+
+* None.
+
+#### Enhancements
+
+* Support compilation with Musl C standard library.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Build without warnings with Swift 6 compiler.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+* Generate docs cleanly with Swift 6 compiler.  
+  [John Fairhurst](https://github.com/johnfairh)
+  [#821](https://github.com/realm/SourceKitten/issues/821)
+
+* Added new syntax, attribute and declaration kinds introduced in Swift 6.0.  
+  [SimplyDanny](https://github.com/SimplyDanny)
+
+#### Bug Fixes
+
+* None.
+
+## 0.36.0
+
+##### Breaking
+
+* Bazel users only: rules_swift 2.x is now required.  
+  [Luis Padron](https://github.com/luispadron)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.35.0
 
 ##### Breaking
 
 * None.
 
 ##### Enhancements
+
+* Support docs generation with SwiftPM in Swift 5.10.  
+  Added new syntax, attribute and declaration kinds introduced in Swift 5.10.  
+  [John Fairhurst](https://github.com/johnfairh)
+
+* Added new syntax, attribute and declaration kinds introduced in Swift 5.9.  
+  [John Fairhurst](https://github.com/johnfairh)
 
 * Added new syntax, attribute and declaration kinds introduced in Swift 5.8.  
   [JP Simard](https://github.com/jpsim)
@@ -13,6 +60,11 @@
   [Zach Jaquish](https://github.com/jaquish)
 
 ##### Bug Fixes
+
+* Fix an issue where the path to the SourceKit library would not be properly
+  detected on Linux, when the swift executable was symlinked into a directory
+  in PATH from its actual install tree.  
+  [Julia DeMille](https://github.com/judemille)
 
 * Fix a crash when a file cannot be read as UTF-8.  
   [Martin Redington](https://github.com/mildm8nnered)

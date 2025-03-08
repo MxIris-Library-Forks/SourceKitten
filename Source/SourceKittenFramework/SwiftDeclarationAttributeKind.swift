@@ -71,7 +71,7 @@ public enum SwiftDeclarationAttributeKind: String, CaseIterable {
     case setterPublic = "source.decl.attribute.setter_access.public"
     case setterOpen = "source.decl.attribute.setter_access.open"
     case optimize = "source.decl.attribute._optimize"
-    case consuming = "source.decl.attribute.__consuming"
+    case __consuming = "source.decl.attribute.__consuming"
     case implicitlyUnwrappedOptional = "source.decl.attribute._implicitly_unwrapped_optional"
 
     // only available in Swift >= 4.1.50
@@ -185,4 +185,34 @@ public enum SwiftDeclarationAttributeKind: String, CaseIterable {
     case typeWrapper = "source.decl.attribute.typeWrapper"
     case _expose = "source.decl.attribute._expose"
     case _documentation = "source.decl.attribute._documentation"
+
+    // Only available in Swift >= 5.9
+    case setterAccessPackage = "source.decl.attribute.setter_access.package"
+    case package = "source.decl.attribute.package"
+    case initializes = "source.decl.attribute.initializes"
+    case _lexicalLifetimes = "source.decl.attribute._lexicalLifetimes"
+    case consuming = "source.decl.attribute.consuming"
+    case attached = "source.decl.attribute.attached"
+    case borrowing = "source.decl.attribute.borrowing"
+    case storageRestrictions = "source.decl.attribute.storageRestrictions"
+    case accesses = "source.decl.attribute.accesses"
+
+    // Only available in Swift >= 5.10
+    case _rawLayout = "source.decl.attribute._rawLayout"
+    case _section = "source.decl.attribute._section"
+    case _used = "source.decl.attribute._used"
+
+    // Only available in Swift >= 6.0
+    case _extern = "source.decl.attribute._extern"
+    case _resultDependsOnSelf = "source.decl.attribute._resultDependsOnSelf"
+    case _preInverseGenerics = "source.decl.attribute._preInverseGenerics"
+    case implementation = "source.decl.attribute.implementation"
+    case _allowFeatureSuppression = "source.decl.attribute._allowFeatureSuppression"
+    case _noRuntime = "source.decl.attribute._noRuntime"
+    case _staticExclusiveOnly = "source.decl.attribute._staticExclusiveOnly"
+    case extractConstantsFromMembers = "source.decl.attribute.extractConstantsFromMembers"
+    case _unsafeNonescapableResult = "source.decl.attribute._unsafeNonescapableResult"
+    case _noExistentials = "source.decl.attribute._noExistentials"
+    case _noObjCBridging = "source.decl.attribute._noObjCBridging"
+    case _nonescapable = "source.decl.attribute._nonescapable"
 }

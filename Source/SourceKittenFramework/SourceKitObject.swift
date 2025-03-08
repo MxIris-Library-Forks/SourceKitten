@@ -1,14 +1,21 @@
 import Foundation
+
 #if SWIFT_PACKAGE
 import SourceKit
 #endif
 
-#if os(Linux)
+#if os(macOS)
+import Darwin
+#elseif os(Linux)
+#if canImport(Glibc)
 import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
 #elseif os(Windows)
 import ucrt
 #else
-import Darwin
+#error("Unsupported platform")
 #endif
 
 // MARK: - SourceKitObjectConvertible
@@ -86,7 +93,7 @@ public final class SourceKitObject {
     ///
     /// - Parameters:
     ///   - value: The new value to add to the dictionary.
-    ///   - key: The key to associate with value. If key already exists in the dictionary, 
+    ///   - key: The key to associate with value. If key already exists in the dictionary,
     ///     value replaces the existing associated value. If key isn't already a key of the dictionary
     public func updateValue(_ value: SourceKitObjectConvertible, forKey key: UID) {
         precondition(value.sourceKitObject != nil)
@@ -110,11 +117,11 @@ public final class SourceKitObject {
     }
 
     func sendAsync() async throws -> sourcekitd_response_t {
-        let handle = UnsafeMutablePointer<sourcekitd_request_handle_t?>.allocate(capacity: 1)
+        let handle = UncheckedSendable(UnsafeMutablePointer<sourcekitd_request_handle_t?>.allocate(capacity: 1))
 
         return try await withTaskCancellationHandler {
             try await withUnsafeThrowingContinuation { continuation in
-                sourcekitd_send_request(sourcekitdObject, handle) { response in
+                sourcekitd_send_request(sourcekitdObject, handle.value) { response in
                     enum SourceKitSendError: Error { case error, noResponse }
 
                     guard let response else {
@@ -130,7 +137,7 @@ public final class SourceKitObject {
                 }
             }
         } onCancel: {
-            sourcekitd_cancel_request(handle)
+            sourcekitd_cancel_request(handle.value)
         }
     }
 }

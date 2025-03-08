@@ -114,6 +114,9 @@ class SourceKitTests: XCTestCase {
 #if compiler(<5.8)
         expected.remove(.macro)
 #endif
+#if compiler(<5.9)
+        expected.remove(.functionAccessorInit)
+#endif
         let expectedStrings = Set(expected.map(\.rawValue))
         XCTAssertEqual(
             actual,
@@ -134,6 +137,32 @@ class SourceKitTests: XCTestCase {
         ]
         let actual = sourcekitStrings(startingWith: "source.decl.attribute.")
             .subtracting(attributesFoundInSwift5ButWeIgnore)
+
+#if compiler(>=6.0)
+        // removed in Swift 6.0
+        expected.subtract([.isolated, ._objcImplementation])
+#else
+        // added in Swift 6.0
+        expected.subtract([._extern, ._resultDependsOnSelf, ._preInverseGenerics, .implementation,
+                           ._allowFeatureSuppression, ._noRuntime, ._staticExclusiveOnly, .extractConstantsFromMembers,
+                           ._unsafeNonescapableResult, ._noExistentials, ._noObjCBridging, ._nonescapable])
+#endif
+#if compiler(>=5.10)
+        // removed in Swift 5.10
+        expected.subtract([.accesses, .runtimeMetadata, .initializes])
+#else
+        // added in Swift 5.10
+        expected.subtract([._rawLayout, ._used, ._section])
+#endif
+
+#if compiler(>=5.9)
+        // removed in Swift 5.9
+        expected.subtract([.typeWrapperIgnored, .typeWrapper])
+#else
+        // added in Swift 5.9
+        expected.subtract([.setterAccessPackage, .package, .initializes, ._lexicalLifetimes,
+                           .consuming, .attached, .borrowing, .storageRestrictions, .accesses])
+#endif
 
 #if compiler(>=5.8)
         // removed in Swift 5.8
